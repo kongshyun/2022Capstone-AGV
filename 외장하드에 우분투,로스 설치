@@ -1,0 +1,21 @@
+//외장하드에 우분투 18.04설치하기
+
+1. USB메모리에 우분투 메모리 다운로드하기
+//방법
+https://blog.naver.com/jokj624/222194924400
+https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=paekjongchan&logNo=220841609613
+
+//설치파일다운로드
+https://rufus.ie/en/
+
+
+//로스 melodic 설치
+https://conceptbug.tistory.com/entry/ROS-Ubuntu-1804-LTS%EC%97%90-ROS-Melodic-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0-2?category=921114
+https://doongdoongeee.tistory.com/86
+https://blog.naver.com/PostView.nhn?blogId=ycpiglet&logNo=222362085688
+
+http://wiki.ros.org/melodic/Installation/Ubuntu
+
+//오류참고
+https://seo-dh-elec.tistory.com/m/61
+https://intrepidgeeks.com/tutorial/how-to-resolve-rosdep-init-error
