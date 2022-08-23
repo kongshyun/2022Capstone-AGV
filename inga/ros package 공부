@@ -1,0 +1,47 @@
+
+
+1. ROS Serial 공부
+2. ROS 패키지 만들기
+
+◎ sudo(Super User do) : 관리자 권한 실행
+◎ cd(Change Directory) : 해당 경로로 이동
+	ex) cd ~/catkin_sw/src   ---> ~(틸드) linux에서 사용자의 home이라는 뜻
+◎ mkdir(Make Directory) : 현재 경로에 폴더 생성
+◎ touch : 현재 경로에 파일 생성
+◎ ls : 현재 경로에 있는 파일을 출력 [ls –l : 리스트 형태로 출력, 세부 정보 확인이 가능]
+◎ pwd(Print Working Directory) : 현재 경로 출력
+◎ --help, man : 명령어 도움말 (예시 → cd --help , man cd)
+◎ clean : 터미널 창 내용 정리
+◎ Tab key(키보드) : 자동 완성
+
+터미널 ctrl + alt + t
+
+터미널 busy 오류
+Solved the issue either stopping modem manager or completely removing it.
+
+sudo stop modemmanager
+
+sudo apt-get remove modemmanager
+
+ros 명령어
+rostoipic list - 현재 topic 리스트를 불러옴
+rostopic echo
+rostopic info /image_raw - type과 publisher, subscriber를 확인 할 수 있음.
+
+
+
+패키지 구성 순서
+1. mkdir fimename
+2. cd fimename
+3. mkdir src
+4. catkin_make
+5. qt_qreator실행
+6. 개발환경 구성된 곳에 프로젝트 형성
+7. catkin_make으로 설정 및 의존>? 구성 - roscpp, std_msgs, cv_bridge등 여러가지
+--> CamkList.txt와 package.xml을 통해 추가가능
+8. 노드 생성 - CmakeLists.txt에서 excutable , depen 어쩌고 추가
+9. 빌드
+
+
+
+

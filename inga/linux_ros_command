@@ -1,0 +1,64 @@
+◎ sudo(Super User do) : 관리자 권한 실행
+◎ cd(Change Directory) : 해당 경로로 이동
+	ex) cd ~/catkin_sw/src   ---> ~(틸드) linux에서 사용자의 home이라는 뜻
+◎ mkdir(Make Directory) : 현재 경로에 폴더 생성
+◎ touch : 현재 경로에 파일 생성
+◎ ls : 현재 경로에 있는 파일을 출력 [ls –l : 리스트 형태로 출력, 세부 정보 확인이 가능]
+◎ pwd(Print Working Directory) : 현재 경로 출력
+◎ --help, man : 명령어 도움말 (예시 → cd --help , man cd)
+◎ clean : 터미널 창 내용 정리
+◎ Tab key(키보드) : 자동 완성
+
+터미널 ctrl + alt + t
+
+터미널 busy 오류
+Solved the issue either stopping modem manager or completely removing it.
+
+sudo stop modemmanager
+
+sudo apt-get remove modemmanager
+
+할것
+
+모터제어기 명령어 넣어주는 package 구성
+
+ros 명령어
+rostoipic list - 현재 topic 리스트를 불러옴
+rostopic echo
+rostopic info /image_raw - type과 publisher, subscriber를 확인 할 수 있음.
+
+ros_realsense_opencv_tutorial
+
+1. cd ros_realsense_opencv_tutorial
+환경 설정
+2. source devel/setup.bash
+3. rosrun ros
+ros 노드 실행
+4. rosrun ros_realsense_opencv_tutorial ros_realsense_opencv_tutorial
+
+ros::Subscriber camerainfo = nh.subscribe("/camera/color/camera_info", 1, ImageCallback);
+realsense topic으로부터 이미지 가져오
+cv_bridge, subscriber로 받아오기 
+opencv처리 
+
+깃 다운
+1. mkdir filename
+2. cd filename
+3. mkdir src
+4. cd src
+5. cakin_init_workspace
+6. cd ..
+7. catkin_make
+8. cd src
+9. git clone 주소
+
+git status
+git add
+git commit 
+git push
+
+git add .
+git status
+git commit -m ""
+git push
+
