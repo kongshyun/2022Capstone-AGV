@@ -10,4 +10,30 @@
 7. tultlesim 노드 구동 테스트 해봄
 8. rosserial 패키지 설치
 9. RViz설치
-10.
+10
+
+
+
+
+
+
+준희씨가 알려준거
+
+python으로 해라! 그래야 키보드 제어 등등 깃허브 소스들 이용가능
+
+1. roslaunch란 roscore을 따로 하지 않아도 바로 roscore랑 패키지이름 노드이름 이런거 한번에 실행시켜 주는거
+준희씨 깃허브->practice->launch->AGV_teleop_key.launch
+
+2. 준희씨 깃허브->practice->nodes->practice_node.py
+키보드로 제어하는 노드 코드
+
+3. 준희씨 깃허브->practice->nodes->AGV_teleop_key.py
+
+4. 준희씨 깃허브->practice->arduinocode->readencoder->readencoder.ino
+모터제어기랑 아두이노 통신 하는것
+
+
+rosserial해서 '키보드 제어하는 노드'에서 '아두이노에서 모터제어기로 시리얼 통신하는 노드'로 보내는 것임.
+이렇게 하면 키보드 제어 할수있다.
+
+여기서 내가 수정할 것은 키보드 키 눌렸을때 속도 변화량을 조절하면 된다.
