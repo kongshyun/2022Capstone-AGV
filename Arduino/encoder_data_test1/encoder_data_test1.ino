@@ -1,7 +1,7 @@
 // AGV_teleop_key.py에서 Twist를 받아 속도명령
 
 // Hello도 발행
-
+//AGV_teleop_key 노드에서 키보드제어를 받고, "Hello"문자열을 발행하는 노드
 #include <ros.h>
 #include <Wire.h>
 #include <geometry_msgs/PointStamped.h>
