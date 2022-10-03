@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-# command에 따라 함수를 다르게 설정 
-#target_linear_vel(선속도)를 /cmd_vel로 퍼블리시하는 node
-#publish 되는 값은 target_linear_vel
+# command에 따라 Twist(속도값)을 변화시키고, 
+# Twist()를 /cmd_vel로 퍼블리시하는 node + Angle()를 /cmd_ang로 퍼블리시하는 node
+# publish 되는 값은 linear.x , angular z
 import rospy
 from std_msgs.msg import Float64
 import sys, select
@@ -56,10 +56,13 @@ def getkey():
 
 
 def talker():
+    settings = termios.tcgetattr(sys.stdin)
     print(a)
     sec=0.0
     rate = rospy.Rate(10) # 루프를 10hz로 유지 
+    
     while(sec<=0.5):
+	    key = getkey()
 	    velocity=-(16.0*sec*sec*sec)+(12.0*sec*sec)
 	    target_linear_vel=velocity*60/(3.14*0.065)
 	    sec=sec+0.02
@@ -69,8 +72,12 @@ def talker():
 	    pub.publish(target_linear_vel) # /cmd_vel 메시지 퍼블리시
             rospy.loginfo("Target_vel: %s" % target_linear_vel) 
 	    rate.sleep() #rate대로 루프 속도 유지 
+	    if key == ' ' or key == 's' :
+		target_linear_vel=0.0
+                break
     print("MAX!! ")
     while(sec>0.0):
+            key = getkey()
             velocity=-(16.0*sec*sec*sec)+(12.0*sec*sec)
 
             target_linear_vel=velocity*60.0/(3.14*0.065)
@@ -81,6 +88,9 @@ def talker():
 	    rospy.loginfo("Target_vel: %s" % target_linear_vel) 
 	   
 	    rate.sleep() #rate대로 루프 속도 유지 
+	    if key == ' ' or key == 's' :
+		target_linear_vel=0.0
+		break
     sec=0.0
     target_linear_vel=0.0
     print(msg)
@@ -122,7 +132,6 @@ if __name__=="__main__":
         pub.publish(target_linear_vel)
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
          
-
 
 
 
