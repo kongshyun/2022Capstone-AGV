@@ -1,3 +1,4 @@
+//#define USE_USBCON true
 #include <PIDController.h>       // PID 라이브러리  
 #include <Wire.h>
 #include <TimerOne.h>            // 타이머 인터럽트 라이브러리
@@ -108,12 +109,6 @@ double dt_R       = ANALOG_PIN_TIMER_INTERVAL / 1000.0; // sampling time
 double lambda_R   = 2 * PI * fc_R * dt_R;
 double x_R        = 0.0;
 double x_f_R      = 0.0;
-double x_fold_R   = 0.0;                // 로우패스필터 변수 왼쪽 오른쪽
-
-unsigned long loop_start_time;          //루프 시작 시각 저장 변수
-unsigned long cycle_start_time;         //for 루프 1 cycle 시작 시각 저장 변수
-unsigned long dt;                       // 1 루프 타임
-unsigned long sttime;
 
 float  p_time;                          //---------------------------
 float  p_velocity;                      //
@@ -124,23 +119,30 @@ float  p_accel;
 
 char  CMD;
 
+double x_fold_R   = 0.0;                // 로우패스필터 변수 왼쪽 오른쪽
+
+unsigned long loop_start_time;          //루프 시작 시각 저장 변수
+unsigned long cycle_start_time;         //for 루프 1 cycle 시작 시각 저장 변수
+unsigned long dt;                       // 1 루프 타임
+unsigned long sttime;
 float RPM;
 
 void MotorL(double Left_v);
 void MotorR(double Right_v);
 
+float publlish_encoder();
+
 //속도를 어디에서받아오는지 구독할 노드를 정의한다.
-
 std_msgs::Float64 str_msg;
-ros::Publisher chatter("chatter", &str_msg);
-
+ros::Publisher enc_pub("encoder_data", &str_msg);
+ros::Publisher lp_time("lp_time", &str_msg);
 // cmd_vel 콜백 함수
 void AGVcontrol_cmd (const std_msgs :: Float64& cmd_vel) {
   //모터속도(왼,오)rpm
   speed_cmd_left = cmd_vel.data;
   MotorL(speed_cmd_left);
-  speed_control();
-
+  publish_encoder();
+  
 }
 
 // subscriber
@@ -158,21 +160,29 @@ void setup() {
   Motors_init();
 
   nh.initNode();
-  nh.getHardware()->setBaud(115200);
+  nh.getHardware()->setBaud(57600);
   nh.subscribe(cmd_vel);
-  nh.advertise(chatter);
+  nh.advertise(enc_pub);
+  nh.advertise(enc_pub);
+  nh.advertise(lp_time);
 
 }
 
 void loop() {
-
+  unsigned long stttime=millis();
   nh.spinOnce();//rosserial을 통해 계속해서 키보드 값을 받는다.
-  delay(10);
-
+  speed_control();
+  unsigned long L_T=millis()-stttime;
+  str_msg.data=L_T;
+  lp_time.publish(&str_msg);
+  
 }
 
 void Motors_init() {
-  Serial.begin(115200);
+  Serial.begin(57600);
+  MotorL(0);
+  MotorR(0);
+  
   Wire.begin(20);
   pinMode(encoderPinA_L, INPUT_PULLUP);     // 엔코더 핀 0~3
   attachInterrupt(0, doEncoderAL, CHANGE);
@@ -222,7 +232,7 @@ void Motors_init() {
 
 
 void MotorL(double Left_v) {
-  SetPoint_L =  -Left_v;
+  SetPoint_L =  Left_v;
   speed_pid_L.setpoint(SetPoint_L);
 
 
@@ -257,7 +267,7 @@ void speed_control() {
   last_encoder_pos_L = encoder_pos_L;          // 루프마다 초기화해서 계속 루프시간당 엔코더 구할 수 있게
   last_encoder_pos_R = encoder_pos_R;
   last_millis = millis();
-  //delayMicroseconds(300);                      //PID 에서 적분시간 Ti를 결정하는 delay
+  delayMicroseconds(300);                      //PID 에서 적분시간 Ti를 결정하는 delay
 }
 
 int motor_direction(double pid) {                // 모터 방향 결정하는 함수
@@ -567,4 +577,9 @@ float low_pass_filter_R(float raw_data) {
 
     return x_f_R;
   }
+}
+
+float publish_encoder(){
+  str_msg.data=x_f_L;
+  enc_pub.publish(&str_msg);
 }
