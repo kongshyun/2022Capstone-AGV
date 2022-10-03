@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-# command에 따라 Twist(속도값)을 변화시키고, 
-# Twist()를 /cmd_vel로 퍼블리시하는 node + Angle()를 /cmd_ang로 퍼블리시하는 node
-# publish 되는 값은 linear.x , angular z
+# command에 따라 함수를 다르게 설정 
+#target_linear_vel(선속도)를 /cmd_vel로 퍼블리시하는 node
+#publish 되는 값은 target_linear_vel
 import rospy
 from std_msgs.msg import Float64
 import sys, select
