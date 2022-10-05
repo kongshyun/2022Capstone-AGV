@@ -81,7 +81,7 @@ int32_t              pwm_freq = 20000;  // 모터 제어 주파수
 
 #define                Kp_rpm   10  // 속도 p 20일때 허용범위 안 정상오차20,0.2,0
 #define                Ki_rpm   0.4     // 속도 i 5 0.4 1
-#define                Kd_rpm   4       // 속도 d 
+#define                Kd_rpm   1       // 속도 d 
 
 const float     g =    9.81;
 float av_dt =    0;
@@ -134,19 +134,24 @@ float publlish_encoder();
 
 //속도를 어디에서받아오는지 구독할 노드를 정의한다.
 std_msgs::Float64 str_msg;
-ros::Publisher enc_pub("encoder_data", &str_msg);
-ros::Publisher lp_time("lp_time", &str_msg);
+ros::Publisher enc_pub_L("enc_pub_L", &str_msg);
+ros::Publisher enc_pub_R("enc_pub_R", &str_msg);
+
 // cmd_vel 콜백 함수
-void AGVcontrol_cmd (const std_msgs :: Float64& cmd_vel) {
+void AGVcontrol_cmd (const std_msgs :: Float64& cmd_vel_left) {
   //모터속도(왼,오)rpm
-  speed_cmd_left = cmd_vel.data;
+  speed_cmd_left = cmd_vel_left.data;
   MotorL(speed_cmd_left);
-  publish_encoder();
+  MotorR(speed_cmd_left);
+  
   
 }
 
 // subscriber
-ros::Subscriber<std_msgs::Float64> cmd_vel("cmd_vel", AGVcontrol_cmd);
+ros::Subscriber<std_msgs::Float64> cmd_vel_left("cmd_vel_left", AGVcontrol_cmd);
+
+ros::Publisher sub_vel("sub_vel", &str_msg);
+
 
 
 
@@ -161,20 +166,18 @@ void setup() {
 
   nh.initNode();
   nh.getHardware()->setBaud(57600);
-  nh.subscribe(cmd_vel);
-  nh.advertise(enc_pub);
-  nh.advertise(enc_pub);
-  nh.advertise(lp_time);
+  nh.subscribe(cmd_vel_left);
+  nh.advertise(enc_pub_L);
+  nh.advertise(sub_vel);
 
 }
 
 void loop() {
-  unsigned long stttime=millis();
   nh.spinOnce();//rosserial을 통해 계속해서 키보드 값을 받는다.
   speed_control();
-  unsigned long L_T=millis()-stttime;
-  str_msg.data=L_T;
-  lp_time.publish(&str_msg);
+  sub_vel.publish(&str_msg);
+  publish_encoder_L();
+  //publish_encoder_R();
   
 }
 
@@ -285,8 +288,6 @@ void Agv_accel( float highest_theta, float Length) {
   String cmd_str;                  //모터에 줄 속도 명령어
   float theta;
 
-
-
   //////////////////////////////////////////////////////////////////////////////////
   profile_maker( highest_theta, (Length)); // 시간, 속도, 최대 가속도, 계수 알파 베타를 반환함
   //////////////////////////////////////////////////////////////////////////////////
@@ -304,20 +305,8 @@ void Agv_accel( float highest_theta, float Length) {
     speed_pid_L.setpoint(SetPoint_L); // PID 함수에 목표값 넣기
     speed_pid_R.setpoint(SetPoint_R);
     //speed_control();
-    /*
-        Serial.print("Target : ");
-        Serial.print(RPM);
-        Serial.print(",");
-        Serial.print("RPM_L : ");
-        Serial.print(x_f_L);
-        Serial.print(",");
-        Serial.print("RPM_R : ");
-        Serial.print(x_f_R);
-        Serial.println();
-    */
     Calculate_delay( p_time * 1000,  p_time * 50 );
   }
-  //Serial.print("\n");
 }
 
 void Agv(float Time) {
@@ -371,17 +360,6 @@ void Agv_decel( float highest_theta, float Length) {
     speed_pid_L.setpoint(SetPoint_L); // PID 함수에 목표값 넣기
     speed_pid_R.setpoint(SetPoint_R);
     //speed_control();
-    /*
-        Serial.print("Target : ");
-        Serial.print(RPM);
-        Serial.print(",");
-        Serial.print("RPM_L : ");
-        Serial.print(x_f_L);
-        Serial.print(",");
-        Serial.print("RPM_R : ");
-        Serial.print(x_f_R);
-        Serial.println();
-    */
     Calculate_delay( p_time * 1000,  p_time * 50 );
 
   }
@@ -579,7 +557,12 @@ float low_pass_filter_R(float raw_data) {
   }
 }
 
-float publish_encoder(){
+float publish_encoder_L(){
   str_msg.data=x_f_L;
-  enc_pub.publish(&str_msg);
+  enc_pub_L.publish(&str_msg);
+}
+
+float publish_encoder_R(){
+  str_msg.data=x_f_R;
+  enc_pub_R.publish(&str_msg);
 }
