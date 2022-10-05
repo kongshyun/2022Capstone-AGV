@@ -37,3 +37,62 @@ rosserial해서 '키보드 제어하는 노드'에서 '아두이노에서 모터
 이렇게 하면 키보드 제어 할수있다.
 
 여기서 내가 수정할 것은 키보드 키 눌렸을때 속도 변화량을 조절하면 된다.
+
+
+🍇️캡스톤 디자인 Agv제어 할것🐰️
+1. ros 공부
+-ros에서 아두이노 제어하기✔️
+-센서활용해서 장애물 인식할수 있나 보기
+-rosserial 설치✔️
+-MPU9250
+-realsense
+-lidar sensor
+-intel nuc 어떻게 할건지?
+<주목적>
+고속이동로봇
+-아두이노메가:AGV, 아두이노우노:Stabilizer
+-방향제어 프로파일 알고리즘 중요(mpu9250, 엔코더 값)
+
+2. rosserial하는법(포트확인  dmesg | grep tty )
+ # 1st terminal 
+ $ roscore
+ # 2nd terminal
+ $ rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0  _baud:=57600
+ # 3rd terminal
+ $ rostopic echo chatter
+
+4. 패키지 만드는법
+-cd ~/catkin_ws/src
+-catkin_create_pkg 패키지이름 message_generation std_msgs    roscpp rospy
+
+7. 실행권한부여(파일 들어가서 해야함)
+ $ sudo chmod +x 노드이름
+
+8.roslaunch(로스런치)
+ $roslaunch 패키지이름 로스런치파일 
+
+9. rostopic pub
+사용자가 임의로 데이터를 발행하는 명령어
+사용법: rostopic pub [topic] [msg_type] [args]
+
+
+<<동건오빠 DC모터 코드>>
+
+가변저항으로 말고 그냥 줄때
+SetPoint_L/R줄때 단위가 어떻게 되는가???
+
+
+ROS 키보드입력
+->아두이노메가노드 속도프로파일계산, AGV명령, Stabili
+
+<<10월 3일 월요일 >>
+1. rosserial DC모터 선속도주기, 엔코더값 받기 ✔️
+practice3 / AGV_teleop_key3.py & DC-24V-PID-double2.ino 
+
+2. rosserial DC모터 선속도, 각속도로 속도주기
+
+3. 시나리오대로 경로 알고리즘 코드 만들기
+
+4. Stabilizer 아두이노 코드를 노드로 만들기
+
+5. EBIMU코드로 Yaw값으로 좌우자세 보정 해보기
