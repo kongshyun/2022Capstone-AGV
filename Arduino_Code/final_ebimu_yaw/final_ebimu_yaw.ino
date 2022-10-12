@@ -1,3 +1,8 @@
+/*
+* 3차 발표 코드/ ebimu yaw값 
+*/
+
+
 #include <Wire.h> 
 #include<Servo.h> //Servo 라이브러리를 추가
 
