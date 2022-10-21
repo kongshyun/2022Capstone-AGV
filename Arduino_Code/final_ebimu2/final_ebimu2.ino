@@ -1,3 +1,5 @@
+//3차 발표 시연 코드
+
 #include <Wire.h> 
 #include<Servo.h> //Servo 라이브러리를 추가
 
