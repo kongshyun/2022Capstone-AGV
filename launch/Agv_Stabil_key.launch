@@ -1,0 +1,15 @@
+<launch>
+  
+   
+  <node pkg="rosserial_python" type="serial_node.py" name="serial_node" output="screen">
+      <param name="port" value="/dev/ttyACM0"/>
+      <param name="baud" value="57600"/>
+  </node>
+  <node pkg="rosserial_python" type="serial_node2.py" name="serial_node2" output="screen">
+      <param name="port" value="/dev/ttyACM1"/>
+      <param name="baud" value="57600"/>
+  </node>
+
+  <node pkg="practice2" type="Key_profile.py" name="Key_profile" output="screen" />
+
+</launch>
