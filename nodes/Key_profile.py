@@ -62,10 +62,12 @@ if __name__=="__main__":
 	    elif key == 'd' :
                 pub_data=6
 		sec=sec+1
+		pub.publish(pub_data)
 		print('AGV GO!!')
 	    elif key == 'a' :
 		pub_data=3
 		sec=sec+1
+		pub.publish(pub_data)
 		print('OFF')
 
 
@@ -76,7 +78,7 @@ if __name__=="__main__":
 	    else:
                 if key == '\x03': # ctrl + c 처리
                     break
-	    pub.publish(pub_data) #vel 값 publish하기
+	   
 	    
 	    
 	    if (sec>10) :
@@ -86,10 +88,9 @@ if __name__=="__main__":
     except:
 	print(e)
     finally:
-        
+        pub.publish(pub_data)
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
          
-
 
 
 
