@@ -20,7 +20,7 @@ Control Your AGV
  
          x
  
-d/a: 1ms long/short
+d/a: 1ms long/short 
 q/e : left/right 90 turn
 w : 180 turn
 
