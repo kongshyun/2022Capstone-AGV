@@ -14,8 +14,16 @@ msg = """
 
 Control Your AGV
 ---------------------------
-    d: 1ms senario
-    a: stop
+   q     w     e
+
+   a           d
+ 
+         x
+ 
+d/a: 1ms long/short
+q/e : left/right 90 turn
+w : 180 turn
+
 ---------------------------
 space key, s : force stop
 
@@ -53,62 +61,41 @@ if __name__=="__main__":
 	while(1):
 	    
 	    key = getkey()
-	    if key == 'w' :
-		try:
-		    talker()
-                      
-		except:
-		    print(e)
-	    elif key == 'd' :
-                pub_data=6
-		sec=sec+1
-		pub.publish(pub_data)
-		print('AGV GO!!')
-	    elif key == 'a' :
-		pub_data=3
-		sec=sec+1
-		pub.publish(pub_data)
-		print('OFF')
+	    
+	    
+	    if key == 'd' : #'1'값 pub
+		pub.publish(1)
+		print('----AGV GO LONG!!----')
+	    elif key == 'a' : #'2'값 pub
+		pub.publish(2)
+		print('----AGV GO SHORT!!----')
+	    elif key == 'q' : #'3'값 pub
+		pub.publish(5)
+		print('----Left Turn----!!')
+            
+	    elif key == 'e' : #'5'값 pub
+		pub.publish(3)
+		print('----Right Turn----!!')
 
+	    elif key == 'w' : #'6'값 pub
+		pub.publish(6)
+		print('----180 Turn----!!')
 
-
-	    elif key == ' ' or key == 's' :
-		target_linear_vel=0.0
-		print(target_linear_vel)
 	    else:
                 if key == '\x03': # ctrl + c 처리
                     break
-	   
-	    
-	    
-	    if (sec>10) :
+
+	    pub_data=0 # pub_data한번 보내고 초기화
+	    pub.publish(pub_data)
+	    if (sec>30) :
 		print(msg)
 		sec=0
 
     except:
 	print(e)
     finally:
+	pub_data=0
         pub.publish(pub_data)
+	print('ALL STOP')
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
