@@ -65,17 +65,17 @@ int                     dir_3 = 0;
 #define          MOTOR_3R_PWM   9       // pin  9  OCR2B
 #define          MOTOR_3L_PWM   10      // pin  10 OCR2A
 
-#define                Kp_posA   250    
-#define                Ki_posA   0.1       
-#define                Kd_posA   5000   
+#define                Kp_posA   80    
+#define                Ki_posA   0.3       
+#define                Kd_posA   3000   
 
-#define                Kp_posB   250  
+#define                Kp_posB   100  
 #define                Ki_posB   0.1  
-#define                Kd_posB   5000  
+#define                Kd_posB   3000  
  
-#define                Kp_posC   250 
+#define                Kp_posC   100 
 #define                Ki_posC   0.1     
-#define                Kd_posC   5000   
+#define                Kd_posC   3000   
 
  const float pi = 3.141592;              // 파이
 const float g = 9.81;                   // 중력가속도
@@ -102,12 +102,14 @@ const int top = 255;
 
 ros::NodeHandle  nh;
 
+
+
 geometry_msgs::PointStamped roll_pitch_theta;
 ros::Publisher imu_data("imu_data", &roll_pitch_theta);
-
-
 // cmd_vel 콜백 함수
 void EBimu_callback(const geometry_msgs :: PointStamped& imu) {
+  //Plate_angle(roll+theta,pitch,0);
+  //degree_control();
   roll=imu.point.x;
   pitch=imu.point.y;
   theta=imu.point.z;
@@ -115,7 +117,7 @@ void EBimu_callback(const geometry_msgs :: PointStamped& imu) {
   roll_pitch_theta.point.x=roll;
   roll_pitch_theta.point.y=pitch;
   roll_pitch_theta.point.z=theta;
-  imu_data.publish(&roll_pitch_theta);//제대로 sub됐는지 pub해서 확인 
+  imu_data.publish(&roll_pitch_theta);
 }
 
 // subscriber
@@ -172,19 +174,21 @@ void setup() {
    Motor3.limit(-top, top);
    Motor3.setpoint(0);   
 
-   Timer1.initialize(20000); // 0.003초마다 실행. in microseconds
-   Timer1.attachInterrupt(degree_control);
+   //Timer1.initialize(20000); // 0.003초마다 실행. in microseconds
+   //Timer1.attachInterrupt(degree_control);
    
   nh.initNode();
   
   nh.subscribe(imu);
   nh.advertise(imu_data);
 
-} 
+}
 
 void loop(){
   nh.spinOnce();
+  degree_control();
   Plate_angle(roll+theta,pitch,0);
+  //Plate_angle(theta,0,0);
 }////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -268,9 +272,9 @@ void Plate_angle(float Roll, float Pitch, float height){
   Calculate_Roll_Pitch(Roll, Pitch, height);
 
   
-  Motor1.setpoint(theta_x);
-  Motor2.setpoint(theta_y);
-  Motor3.setpoint(theta_z);
+  Motor2.setpoint(theta_x);
+  Motor3.setpoint(theta_y);
+  Motor1.setpoint(theta_z);
   
 }//Plate_angle//
 
@@ -287,7 +291,7 @@ void Calculate_Roll_Pitch(float Target_roll, float Target_pitch, float Target_he
   float link_B1 = 60; //
   float link_B2 = 60; //
   float link_B3 = 60; //
-  float height_data = 58 + Target_height; // 
+  float height_data = 59 + Target_height; // 
 
   ///////////////////////////////////////////////
   
