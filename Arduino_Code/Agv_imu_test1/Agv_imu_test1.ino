@@ -2,7 +2,7 @@
  * Serial_node.py
  * AGV + Stabil dual rosserial test1
  * DC모터 구동과 yaw방향제어 및 ebimu센서값(roll, pitch)와 theta Stabil노드로 pub 
- */
+ */ 
 /////////////////////////// 받은 속도값으로 모터 제어+엔코더 값을 읽어 퍼블리시하는 node
 #include <ros.h>
 #include<std_msgs/Int16.h>
