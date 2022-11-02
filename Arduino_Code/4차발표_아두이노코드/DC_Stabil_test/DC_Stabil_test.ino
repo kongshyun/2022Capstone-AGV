@@ -1,3 +1,9 @@
+/*
+ * Serial_node2.py
+ * Port : /dev/ttyACM1
+ * roll,pitch,theta값 subscribe해서 짐벌 기능
+ */
+ 
 #include <PIDController.h>       // PID 라이브러리  
 #include <Wire.h>    
 #include <TimerOne.h>            // 타이머 인터럽트 라이브러리
@@ -59,17 +65,17 @@ int                     dir_3 = 0;
 #define          MOTOR_3R_PWM   9       // pin  9  OCR2B
 #define          MOTOR_3L_PWM   10      // pin  10 OCR2A
 
-#define                Kp_posA   200     
-#define                Ki_posA   0.0001       
-#define                Kd_posA   6000   
+#define                Kp_posA   250    
+#define                Ki_posA   0.1       
+#define                Kd_posA   5000   
 
-#define                Kp_posB   2000    
-#define                Ki_posB   0    
-#define                Kd_posB   100  
-
-#define                Kp_posC   300    
-#define                Ki_posC   2       
-#define                Kd_posC   10000   
+#define                Kp_posB   250  
+#define                Ki_posB   0.1  
+#define                Kd_posB   5000  
+ 
+#define                Kp_posC   250 
+#define                Ki_posC   0.1     
+#define                Kd_posC   5000   
 
  const float pi = 3.141592;              // 파이
 const float g = 9.81;                   // 중력가속도
@@ -145,12 +151,11 @@ void setup() {
 
    
    TCCR3A = bit(COM3A1) | bit(WGM30);
-   TCCR3B = bit(WGM32)  | bit(CS30);
+   TCCR3B = bit(WGM32)  | bit(CS32); 
    TCCR4A = bit(COM4A1) | bit(COM4B1) | bit(COM4C1) | bit(WGM40);
-   TCCR4B = bit(WGM42)  | bit(CS40);
+   TCCR4B = bit(WGM42)  | bit(CS42);
    TCCR2A = bit(COM2A1) | bit(COM2B1) | bit(WGM21)  | bit(WGM20);
-   TCCR2B = bit(CS20); 
-   
+   TCCR2B = bit(CS22)    | bit(CS20);  
    
    Motor1.begin();                           //pid 라이브러리 따라서 선언
    Motor1.tune(Kp_posA, Ki_posA, Kd_posA);      //pid 계수
@@ -166,7 +171,10 @@ void setup() {
    Motor3.tune(Kp_posC, Ki_posC, Kd_posC);    
    Motor3.limit(-top, top);
    Motor3.setpoint(0);   
-     
+
+   Timer1.initialize(20000); // 0.003초마다 실행. in microseconds
+   Timer1.attachInterrupt(degree_control);
+   
   nh.initNode();
   
   nh.subscribe(imu);
