@@ -415,7 +415,7 @@ void profile_maker(float highest_theta, float Length){
   A_velocity    = -pow(t,3)* (alpha/ 3)  + pow(t,2)* (beta/2);      // 속도 
 
   p_accel       =  highest_accel;
-  p_time        =  profile_Time;
+  p_time        =  profile_Time; 
   p_velocity    =  A_velocity;
   p_length      =  V_length;
   p_alpha       =  alpha;
