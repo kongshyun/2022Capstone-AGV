@@ -68,7 +68,7 @@ void AGVcontrol_cmd (const std_msgs :: Int16& cmd_vel) {
      
   //ros 명령 받으면 1ms속도 시나리오 
   int key=cmd_vel.data;//명령 받은 키
-  if (key >5 )
+  if (key ==1 )
   {
     publish_imu_accel();
     target_yaw = angle_z;
@@ -76,19 +76,38 @@ void AGVcontrol_cmd (const std_msgs :: Int16& cmd_vel) {
     Agv_accel(7,0.70);
     Agv(0.7);
     Agv_decel(7,0.70);
-    delay(2000);
-    Agv_turn(0.5,0.05);
-    delay(2000);
-    
+  }
+  else if ( key==3) //turn 90도 좌회전 
+  {
+    publish_imu_accel();
+    target_yaw = angle_z;
+    Agv_turn_left(1,0.3);
+  }
+  else if ( key==6) //turn 180도 유턴 
+  {
+    publish_imu_accel();
+    target_yaw = angle_z;
+    Agv_turn_left(1,0.45);
+  }
+  else if ( key==5) //turn 90도 우회전 
+  {
+    publish_imu_accel();
+    target_yaw = angle_z;
+    Agv_turn_right(1,0.3);
+  }
+  else if ( key==2)
+  {
+    publish_imu_accel();
+    target_yaw = angle_z;
     Agv_accel(5,0.5);
     Agv_decel(5,0.5);
   }
-  
-  else if ( key>0 && key<4)
-  {
+    
+  else{
     Serial3.println("co1=0");Serial3.println("co2=0");
-    Serial3.println("mvc=0,0");
   }
+    
+  
   timecycle(); // -주기 계산 함수
 }
 
@@ -170,7 +189,7 @@ int EBimuAsciiParser(float *item, int number_of_item)
   return result;
 }
 
-void Agv_turn(float highest_theta, float Length){
+void Agv_turn_left(float highest_theta, float Length){
   
   float Vel;
   float Accel;
@@ -213,6 +232,54 @@ void Agv_turn(float highest_theta, float Length){
     RPM     =  Vel*60/(3.14*0.095);
     cmd_rpm =  RPM;
     cmd_str =  "mvc="+String(-cmd_rpm)+","+String(-cmd_rpm);
+    Serial3.println(cmd_str);                                     //모터에명령통신
+    
+    Calculate_delay( p_time*1000,  p_time*50 );
+  }
+}
+void Agv_turn_right(float highest_theta, float Length){
+  
+  float Vel;
+  float Accel;
+  float cmd_rpm;  //모터에 부여할 RPM
+  String cmd_str;                  //모터에 줄 속도 명령어
+
+  Serial3.println("co1=1");Serial3.println("co2=1");
+ 
+  //////////////////////////////////////////////////////////////////////////////////
+  profile_maker( highest_theta, Length); // 시간, 속도, 최대 가속도, 계수 알파 베타를 반환함
+  //////////////////////////////////////////////////////////////////////////////////
+  
+  for(float sec=0; sec < p_time;  sec += 0.02){
+    cycle_start_time = millis();
+    
+    publish_imu_accel();
+            
+    Vel     = -pow(sec,3) * (p_alpha/3) + pow(sec,2)* (p_beta/2); // 속도 
+    Accel   = -pow(sec,2) *  p_alpha    + pow(sec,1)*  p_beta;    // 가속도
+    theta   =  atan(Accel/g)*180/3.14;    
+    RPM     =  Vel*60/(3.14*0.095);
+    
+    cmd_rpm =  RPM;
+    cmd_str =  "mvc="+String(cmd_rpm)+","+String(cmd_rpm);
+    Serial3.println(cmd_str);                                     //모터에명령통신
+
+    //theta값 pub
+
+    
+    Calculate_delay( p_time*1000,  p_time*50 );
+  }
+    for(float sec= p_time ; sec > 0;  sec -= 0.02){
+    cycle_start_time = millis();
+
+    publish_imu_accel();
+    
+    Vel     = -pow(sec,3) * (p_alpha/3) + pow(sec,2)* (p_beta/2); // 속도 
+    Accel   = -pow(sec,2) *  p_alpha    + pow(sec,1)*  p_beta;    // 가속도
+    theta   =  atan(Accel/g)*180/3.14;    
+    RPM     =  Vel*60/(3.14*0.095);
+    cmd_rpm =  RPM;
+    cmd_str =  "mvc="+String(cmd_rpm)+","+String(cmd_rpm);
     Serial3.println(cmd_str);                                     //모터에명령통신
     
     Calculate_delay( p_time*1000,  p_time*50 );
