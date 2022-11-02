@@ -56,7 +56,7 @@ const float ratio =    17;
 
 ros::NodeHandle  nh;
 
-
+float roll,pitch;
 // cmd_vel 콜백 함수(Key_profile.py노드에서 받은 data로 agv dc모터 제어)
 void AGVcontrol_cmd (const std_msgs :: Int16& cmd_vel) {
   //publish_imu_accel();
@@ -70,9 +70,9 @@ void AGVcontrol_cmd (const std_msgs :: Int16& cmd_vel) {
   int key=cmd_vel.data;//명령 받은 키
   if (key ==1 )
   {
-    Agv_accel(7,0.70);
+    Agv_accel(15,1);
     Agv(0.7);
-    Agv_decel(7,0.70);
+    Agv_decel(15,1);
   }
   else if ( key==3) //turn 90도 좌회전 
   {
@@ -96,7 +96,6 @@ void AGVcontrol_cmd (const std_msgs :: Int16& cmd_vel) {
     Serial3.println("co1=0");Serial3.println("co2=0");
   }
     
-  
   timecycle(); // -주기 계산 함수
 }
 
@@ -117,12 +116,13 @@ void setup() {
   nh.initNode();
   nh.subscribe(cmd_vel);
   nh.advertise(imu_pub);
-
+  imu.point.z=0;
 }
 
 void loop() {
   nh.spinOnce();//rosserial을 통해 계속해서 키보드 값을 받는다.
   publish_imu_accel();
+  ///imu_pub.publish(&imu);
 }
 
 
@@ -134,14 +134,17 @@ void publish_imu_accel(){
   
   if(EBimuAsciiParser(euler, 3))
   {
-     imu.point.x=euler[0];//Roll
-     imu.point.y=euler[1];//Pitch
+     //imu.point.x=euler[0];//Roll
+     //imu.point.y=-euler[1];//Pitch
+     imu.point.x=0;//Roll
+     imu.point.y=0;//Pitch
      angle_z=euler[2];//Yaw
      imu.point.z=theta; //Stabil 로 pub할 theta값
-     //imu.point.z=angle_z;
-     //imu.header.stamp=nh.now();
+     imu.header.stamp=nh.now();
      imu_pub.publish(&imu);
+     
   }
+  
 }
 
 
@@ -375,7 +378,7 @@ void Agv_decel( float highest_theta, float Length){
     
     Vel     = -pow(sec,3) * (p_alpha/3) + pow(sec,2)* (p_beta/2); // 속도 
     Accel   = -pow(sec,2) *  p_alpha    + pow(sec,1)*  p_beta;    // 가속도
-    theta   =  atan(Accel/g)*180/3.14;    
+    theta   =  -atan(Accel/g)*180/3.14;    
     RPM     =  Vel*60/(3.14*0.095);
     cmd_rpm_1 =  RPM - (RPM_yaw/5);
     cmd_rpm_2 =  RPM + (RPM_yaw/5);
