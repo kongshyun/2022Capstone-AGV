@@ -30,7 +30,7 @@ double             SetPoint_3 = 0;
 int                     dir_1 = 0;     // 방향 결정
 int                     dir_2 = 0;
 int                     dir_3 = 0;  
-
+ 
 #define               Forward   1
 #define              Backward   2
 #define                  Stop   0
