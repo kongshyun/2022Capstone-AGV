@@ -180,7 +180,7 @@ void setup() {
   nh.subscribe(imu);
   nh.advertise(imu_data);
 
-}
+} 
 
 void loop(){
   nh.spinOnce();
