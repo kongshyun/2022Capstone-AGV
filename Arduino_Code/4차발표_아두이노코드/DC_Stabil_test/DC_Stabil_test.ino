@@ -1,6 +1,6 @@
 /*
  * Serial_node2.py
- * Port : /dev/ttyACM1
+ * Port : /dev/ttyACM0
  * roll,pitch,theta값 subscribe해서 짐벌 기능
  */
  
@@ -106,16 +106,13 @@ ros::NodeHandle  nh;
 
 geometry_msgs::PointStamped roll_pitch_theta;
 ros::Publisher imu_data("imu_data", &roll_pitch_theta);
+
 // cmd_vel 콜백 함수
 void EBimu_callback(const geometry_msgs :: PointStamped& imu) {
-  //Plate_angle(roll+theta,pitch,0);
-  //degree_control();
-  roll=imu.point.x;
-  pitch=imu.point.y;
-  theta=imu.point.z;
+  //Plate_angle(theta,0,0);
   
-  roll_pitch_theta.point.x=roll;
-  roll_pitch_theta.point.y=pitch;
+  theta=imu.point.z;
+  roll_pitch_theta.point.y=imu.point.y;
   roll_pitch_theta.point.z=theta;
   imu_data.publish(&roll_pitch_theta);
 }
@@ -187,8 +184,8 @@ void setup() {
 void loop(){
   nh.spinOnce();
   degree_control();
-  Plate_angle(roll+theta,pitch,0);
-  //Plate_angle(theta,0,0);
+  Plate_angle(theta,0,0);
+  //theta=0;
 }////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -210,7 +207,11 @@ void degree_control(){                                          // 각도 제어
      dir_3 = motor_direction(motor_value_3);
      
      motor_controlA((dir_1 > 0 )?Forward:Backward, min(abs(motor_value_1),top));  
-     motor_controlB((dir_2 > 0 )?Forward:Backward, min(abs(motor_value_2),top));
+     digitalWrite(MOTOR_2R_PWM, HIGH);
+     digitalWrite(MOTOR_2L_PWM, HIGH);
+     
+     
+     //motor_controlB((dir_2 > 0 )?Forward:Backward, min(abs(motor_value_2),top));
      motor_controlC((dir_3 > 0 )?Forward:Backward, min(abs(motor_value_3),top));
      
 }
@@ -267,6 +268,10 @@ void timecycle(){//ㅡㅡㅡㅡㅡㅡㅡㅡ
                                        
 }//timecycle
 ///////==============================================================================/////
+
+
+
+
 void Plate_angle(float Roll, float Pitch, float height){
 
   Calculate_Roll_Pitch(Roll, Pitch, height);
@@ -275,7 +280,6 @@ void Plate_angle(float Roll, float Pitch, float height){
   Motor2.setpoint(theta_x);
   Motor3.setpoint(theta_y);
   Motor1.setpoint(theta_z);
-  
 }//Plate_angle//
 
 
