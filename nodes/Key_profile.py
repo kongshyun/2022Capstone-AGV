@@ -18,9 +18,9 @@ Control Your AGV
 
    a           d
  
-         x
+   z     x     c
  
-d/a: 1ms long/short 
+d/a: 1ms long/short
 q/e : left/right 90 turn
 w : 180 turn
 
@@ -61,33 +61,44 @@ if __name__=="__main__":
 	while(1):
 	    
 	    key = getkey()
-	    
-	    
 	    if key == 'd' : #'1'값 pub
 		pub.publish(1)
 		print('----AGV GO LONG!!----')
+		pub.publish(0)
 	    elif key == 'a' : #'2'값 pub
 		pub.publish(2)
 		print('----AGV GO SHORT!!----')
+		pub.publish(0)
 	    elif key == 'q' : #'3'값 pub
 		pub.publish(5)
 		print('----Left Turn----!!')
+		pub.publish(0)
             
 	    elif key == 'e' : #'5'값 pub
 		pub.publish(3)
 		print('----Right Turn----!!')
+		pub.publish(0)
 
 	    elif key == 'w' : #'6'값 pub
 		pub.publish(6)
 		print('----180 Turn----!!')
+		pub.publish(0)
+	    elif key == 'z' : 
+		pub.publish(7)
+		print('----small left----!!')
+		pub.publish(0)
+	    elif key == 'c' :
+		pub.publish(8)
+		print('----small right----!!')
+		pub.publish(0)
 
 	    else:
                 if key == '\x03': # ctrl + c 처리
                     break
 
-	    pub_data=0 # pub_data한번 보내고 초기화
-	    pub.publish(pub_data)
-	    if (sec>30) :
+	    #pub_data=0 # pub_data한번 보내고 초기화
+	    pub.publish(0)
+	    if (sec>10) :
 		print(msg)
 		sec=0
 
@@ -99,3 +110,24 @@ if __name__=="__main__":
 	print('ALL STOP')
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
