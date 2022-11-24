@@ -1,0 +1,29 @@
+[ ros 가이드 ]
+인텔누크 암호 : 0000
+vnc암호: 000000
+
+1. 인텔누크 원격접속
+>>인텔누크 랩실 모니터(HDMI), 키보드, 마우스 연결해서 켜기 
+>>
+>>노트북 vnc viewer 들어가기 
+
+2.아두이노 코드 업로드 (바탕화면 4차아두이노코드폴더)
+
+- 짐벌코드: DC_Stabil_test  
+-AGV코드:Agv_imu_test2
+>>각각 포트 ACM0 or ACM1 툴 설정
+>>업로드 전 터미널창 (Ctrl+art+t) 열어서 포트 권한부여해줘야 업로드 됨.
+sudo chmod 666 /dev/ttyACM0 && sudo chmod 666 /dev/ttyACM1
+터미널창에  붙여넣기(shift+insert)
+<아두이노 업로드>
+
+3. 터미널창
+>> ros실행 명령어
+roslaunch practice2 Agv_Stabil_key.launch
+
+>>순서 유의!!! 각 아두이노 업로드 후 위 명령어 쳐야함!!
+
+위 명령어친 터미널 창에 d 키 입력시 agv주행, w키 입력시 유턴
+>>터미널 명령어 종료 (ctrl+c)
+>>터미널창 끄기(ctrl+shift+w)
+>>터미널창 분할(ctrl+shift+o)
