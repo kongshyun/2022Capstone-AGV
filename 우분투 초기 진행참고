@@ -19,7 +19,7 @@
 
 준희씨가 알려준거
 
-python으로 해라! 그래야 키보드 제어 등등 깃허브 소스들 이용가능
+python추천! 그래야 키보드 제어 등등 깃허브 소스들 이용가능
 
 1. roslaunch란 roscore을 따로 하지 않아도 바로 roscore랑 패키지이름 노드이름 이런거 한번에 실행시켜 주는거
 준희씨 깃허브->practice->launch->AGV_teleop_key.launch
@@ -76,7 +76,7 @@ rosserial해서 '키보드 제어하는 노드'에서 '아두이노에서 모터
 사용법: rostopic pub [topic] [msg_type] [args]
 
 
-<<동건오빠 DC모터 코드>>
+<<동건 DC모터 코드>>
 
 가변저항으로 말고 그냥 줄때
 SetPoint_L/R줄때 단위가 어떻게 되는가???
